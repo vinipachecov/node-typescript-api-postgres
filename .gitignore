@@ -57,3 +57,6 @@ typings/
 # dotenv environment variables file
 .env
 
+config.ts
+development.env.ts
+test.env.ts
