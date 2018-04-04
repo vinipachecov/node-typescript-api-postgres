@@ -1,8 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const HTTPStatus = require("http-status");
+const service_1 = require("./service");
 class UserController {
     constructor() {
+        this.UserService = new service_1.default();
     }
     getAll(req, res) {
         res.status(HTTPStatus.OK).json({

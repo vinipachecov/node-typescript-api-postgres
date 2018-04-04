@@ -10,7 +10,7 @@
     "integration-test": "NODE_ENV=test mocha --opts dist/tests/integration/config/mocha.opts ./dist/tests/integration/integration.test.js",
     "builded": "node ./build/server/js",
     "start": "./node_modules/.bin/ts-node ./server/server/ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test-db": "NODE_ENV=test node_modules/.bin/nodemon --delay 5 dist/server/server"
   },
   "repository": {
     "type": "git",
@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/vinipachecov/node-typescript-api-postgres#readme",
   "dependencies": {
+    "bluebird": "^3.5.1",
     "body-parser": "^1.18.2",
     "express": "^4.16.3",
     "http": "0.0.0",
