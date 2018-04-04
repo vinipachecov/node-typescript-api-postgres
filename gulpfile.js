@@ -6,44 +6,41 @@ const ts = require('gulp-typescript');
 
 const tsProject = ts.createProject('tsconfig.json');
 
-/*
-task
-- name
-- dependencies
-- function
- */
 
-//lógica de automação
-gulp.task('scripts', ['static'], () => {
-  const tsResult = tsProject.src()
-  // to do a operation in this point
-    .pipe(tsProject());
 
-  tsResult.js
-    .pipe(gulp.dest('dist'));
+gulp.task("compile", function () {
+  return tsProject.src()
+      .pipe(tsProject())
+      .js.pipe(gulp.dest("dist"));
 });
 
-
-// json files...
-gulp.task('static', ['clean'], () => {
-  return gulp
-    .src(['server/**/*.json'])
-    .pipe(gulp.dest('dist'));
+gulp.task("clean", function() {
+return gulp.src('dist')
+           .pipe(clean());
 });
 
-//Responsable for cleaning the dist folder
-gulp.task('clean', () => {
-  return gulp
-    .src('dist')
-    .pipe(clean());
+gulp.task("copy-opts", ['clean', 'compile'], function() {
+return gulp.src('tests/unit/config/mocha.opts')
+           .pipe(gulp.dest('dist/tests/unit/config'))
+           .pipe(gulp.dest('dist/tests/integration/config'))
+});
+
+gulp.task('copy-migration-config',['clean','compile', 'copy-opts' ], () => {
+  return gulp.src('server/config/config.json')
+    pipe(gulp.dest('dist/server/config'))
+})
+
+gulp.task('build', ['copy-migration-config'], () => {
+  return gulp.src('server/migrations/')
+    .pipe(gulp.dest('dist/server/migrations'))
 });
 
 // call the other tasks in a specific order
-gulp.task('build', ['scripts']);
+// gulp.task('build', ['copy-opts',]);
 
-gulp.task('watch', ['build'], () => {
-  return gulp.watch(['server/**/*.ts', 'server/**/*.json', 'tests/**/*.ts'], ['build']);
-});
+//  gulp.task('watch', ['build'], () => {
+//    return gulp.watch(['server/**/*.ts', 'server/**/*.json', 'tests/**/*.ts','tests/**/*.opts'], ['build']);
+// });
 
 
-gulp.task('default', ['watch']);
+gulp.task('default', ['build']);

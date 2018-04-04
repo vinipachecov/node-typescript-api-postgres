@@ -54,4 +54,4 @@ class User implements IUser {
   }
 }
 
-export default User;
+export default new User();

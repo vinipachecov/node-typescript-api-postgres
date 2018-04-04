@@ -40,4 +40,4 @@ class User {
         });
     }
 }
-exports.default = User;
+exports.default = new User();
