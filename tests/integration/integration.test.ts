@@ -28,7 +28,7 @@ describe('Testes de Integração', () => {
   };
 
 
-  //before each test
+  // before each test
   // delete all users
   // create both default user and testUser
   beforeEach((done => {
@@ -91,10 +91,11 @@ describe('Testes de Integração', () => {
       .post('/api/users/create')
       .send(user)
       .end((error, res) => {
+        console.log(res.body.payload);
         expect(res.status).to.equal(HTTPStatus.OK);
         expect(res.body.payload.id).to.be.eql(user.id);
         expect(res.body.payload.name).to.be.eql(user.name);
-        expect(res.body.payload.id).to.be.eql(user.email);
+        expect(res.body.payload.email).to.be.eql(user.email);
         done(error);
       });
 
@@ -104,16 +105,16 @@ describe('Testes de Integração', () => {
   describe('PUT /api/users/:id/update', () => {
     it('Deve atualizar um usuário', done => {
       const user = {
-        nome: 'TesteUpdate',
+        name: 'TesteUpdate',
         email: 'update@email.com'
       };
       request(app)
       .put(`/api/users/${1}/update`)
       .send(user)
-      .end((error, res) => {
+      .end((error, res) => {                
         expect(res.status).to.equal(HTTPStatus.OK);
-        expect(res.body.payload.name).to.be.eql(userTest.name)
-        expect(res.body.payload.name).to.be.eql(userTest.email)
+        expect(res.body.payload[1][0].name).to.be.eql(user.name)
+        expect(res.body.payload[1][0].email).to.be.eql(user.email)
         done(error);
       });
     });    
@@ -124,8 +125,9 @@ describe('Testes de Integração', () => {
       request(app)
       .delete(`/api/users/${userTest.id}/destroy`)      
       .end((error, res) => {
+        console.log(res.body.payload);
         expect(res.status).to.equal(HTTPStatus.OK);
-        expect(res.body.payload).to.be.lengthOf(1);
+        expect(res.body.payload).to.be.eql(1);
         done(error);
       });
     });    

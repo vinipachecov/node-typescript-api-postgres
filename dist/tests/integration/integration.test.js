@@ -20,7 +20,7 @@ describe('Testes de Integração', () => {
         email: 'default@email.com',
         password: 'default'
     };
-    //before each test
+    // before each test
     // delete all users
     // create both default user and testUser
     beforeEach((done => {
@@ -77,10 +77,11 @@ describe('Testes de Integração', () => {
                 .post('/api/users/create')
                 .send(user)
                 .end((error, res) => {
+                console.log(res.body.payload);
                 helpers_1.expect(res.status).to.equal(HTTPStatus.OK);
                 helpers_1.expect(res.body.payload.id).to.be.eql(user.id);
                 helpers_1.expect(res.body.payload.name).to.be.eql(user.name);
-                helpers_1.expect(res.body.payload.id).to.be.eql(user.email);
+                helpers_1.expect(res.body.payload.email).to.be.eql(user.email);
                 done(error);
             });
         });
@@ -88,7 +89,7 @@ describe('Testes de Integração', () => {
     describe('PUT /api/users/:id/update', () => {
         it('Deve atualizar um usuário', done => {
             const user = {
-                nome: 'TesteUpdate',
+                name: 'TesteUpdate',
                 email: 'update@email.com'
             };
             helpers_1.request(helpers_1.app)
@@ -96,8 +97,8 @@ describe('Testes de Integração', () => {
                 .send(user)
                 .end((error, res) => {
                 helpers_1.expect(res.status).to.equal(HTTPStatus.OK);
-                helpers_1.expect(res.body.payload.name).to.be.eql(userTest.name);
-                helpers_1.expect(res.body.payload.name).to.be.eql(userTest.email);
+                helpers_1.expect(res.body.payload[1][0].name).to.be.eql(user.name);
+                helpers_1.expect(res.body.payload[1][0].email).to.be.eql(user.email);
                 done(error);
             });
         });
@@ -107,8 +108,9 @@ describe('Testes de Integração', () => {
             helpers_1.request(helpers_1.app)
                 .delete(`/api/users/${userTest.id}/destroy`)
                 .end((error, res) => {
+                console.log(res.body.payload);
                 helpers_1.expect(res.status).to.equal(HTTPStatus.OK);
-                helpers_1.expect(res.body.payload).to.be.lengthOf(1);
+                helpers_1.expect(res.body.payload).to.be.eql(1);
                 done(error);
             });
         });
