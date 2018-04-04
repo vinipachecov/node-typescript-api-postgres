@@ -5,9 +5,11 @@ const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const routes_1 = require("./routes/routes");
 const errorHandlerApi_1 = require("./errorHandlerApi");
+const auth_1 = require("../auth");
 class Api {
     constructor() {
         this.express = express();
+        this.auth = auth_1.default();
         this.middlware();
     }
     middlware() {
@@ -18,10 +20,12 @@ class Api {
         //accept json data in the body
         this.express.use(bodyParser.json());
         this.express.use(errorHandlerApi_1.errorHandlerApi);
-        this.router(this.express);
+        //send my authentication strategy
+        this.express.use(this.auth.initialize());
+        this.router(this.express, this.auth);
     }
-    router(app) {
-        new routes_1.default(app);
+    router(app, auth) {
+        new routes_1.default(app, auth);
     }
 }
 exports.default = new Api().express;

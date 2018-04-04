@@ -13,17 +13,17 @@ const defaultUser  = {
   password: '1234'
 }
 
-beforeEach((done)=>{
-  model.User.destroy({
-    where:{}
-  })
-  .then(()=>{
-    model.User.create(defaultUser).then(()=>{
-      console.log('Default user criado');
-      done();
-    })
-  })
-})
+// beforeEach((done)=>{
+//   model.User.destroy({
+//     where:{}
+//   })
+//   .then(()=>{
+//     model.User.create(defaultUser).then(()=>{
+//       console.log('Default user criado');
+//       done();
+//     })
+//   })
+// })
 
 
 // encapsulate all test inside this one 

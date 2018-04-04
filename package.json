@@ -10,6 +10,8 @@
     "integration-test": "NODE_ENV=test mocha --opts dist/tests/integration/config/mocha.opts ./dist/tests/integration/integration.test.js",
     "builded": "node ./build/server/js",
     "start": "./node_modules/.bin/ts-node ./server/server/ts",
+    "integration-coverage": "nyc --reporter=html npm run integration-test",
+    "unit-coverage": "nyc --reporter=html npm run unit-test",
     "test-db": "NODE_ENV=test node_modules/.bin/nodemon --delay 5 dist/server/server"
   },
   "repository": {
@@ -24,13 +26,20 @@
   },
   "homepage": "https://github.com/vinipachecov/node-typescript-api-postgres#readme",
   "dependencies": {
+    "@types/jwt-simple": "^0.5.33",
+    "@types/passport": "^0.4.4",
+    "@types/passport-jwt": "^3.0.1",
+    "bcrypt": "^1.0.3",
     "bluebird": "^3.5.1",
     "body-parser": "^1.18.2",
     "express": "^4.16.3",
     "http": "0.0.0",
     "http-status": "^1.0.1",
+    "jwt-simple": "^0.5.1",
     "lodash": "^4.17.5",
     "morgan": "^1.9.0",
+    "passport": "^0.4.0",
+    "passport-jwt": "^4.0.0",
     "pg": "^7.4.1",
     "sequelize": "^4.37.5",
     "sequelize-cli": "^4.0.0"
@@ -52,8 +61,10 @@
     "gulp": "^3.9.1",
     "gulp-clean": "^0.3.2",
     "gulp-typescript": "^3.2.4",
+    "istanbul": "^0.4.5",
     "mocha": "^5.0.5",
     "nodemon": "^1.17.3",
+    "nyc": "^11.6.0",
     "supertest": "^3.0.0",
     "testdouble": "^3.7.0",
     "typescript": "^2.5.3"

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const jwt = require("jwt-simple");
 const HTTPStatus = require("http-status");
 const helpers_1 = require("./config/helpers");
 describe('Testes de Integração', () => {
@@ -8,10 +9,11 @@ describe('Testes de Integração', () => {
     const model = require('../../server/models');
     // auxiliary test variables
     let id;
+    let token;
     const userTest = {
         id: 100,
-        name: 'Usuário Teste',
-        email: 'teste@email.com',
+        name: 'maria',
+        email: 'maria@email.com',
         password: 'teste'
     };
     const userDefault = {
@@ -33,14 +35,48 @@ describe('Testes de Integração', () => {
             .then((user) => {
             return model.User.create(userTest)
                 .then(() => {
+                token = jwt.encode({ id: user.id }, config.secret);
                 done();
             });
         });
     }));
+    describe('POST /token', () => {
+        it('Deve receber um JWT', done => {
+            const credentials = {
+                email: userDefault.email,
+                password: userDefault.password
+            };
+            helpers_1.request(helpers_1.app)
+                .post('/token')
+                .send(credentials)
+                .end((error, res) => {
+                console.log(credentials, res.body.token);
+                helpers_1.expect(res.status).to.equal(HTTPStatus.OK);
+                helpers_1.expect(res.body.token).to.equal(token);
+                done(error);
+            });
+        });
+        it('Não deve gerar token', done => {
+            const credentials = {
+                email: 'email@umemailfalso.com',
+                password: 'anypassword'
+            };
+            helpers_1.request(helpers_1.app)
+                .post('/token')
+                .send(credentials)
+                .end((error, res) => {
+                helpers_1.expect(res.status).to.equal(HTTPStatus.UNAUTHORIZED);
+                helpers_1.expect(res.body).to.empty;
+                done(error);
+            });
+        });
+    });
     describe('GET /api/users/all', () => {
         it('Deve retornar um array com todos os usuários', done => {
             helpers_1.request(helpers_1.app)
                 .get('/api/users/all')
+                .set('Content-Type', 'application/json')
+                .set('Authorization', `JWT ${token}`)
                 .end((error, res) => {
                 helpers_1.expect(res.status).to.equal(HTTPStatus.OK);
                 helpers_1.expect(res.body.payload).to.be.an('array');
@@ -54,6 +90,8 @@ describe('Testes de Integração', () => {
         it('Deve retornar apenas um usuário', done => {
             helpers_1.request(helpers_1.app)
                 .get(`/api/users/${userDefault.id}`)
+                .set('Content-Type', 'application/json')
+                .set('Authorization', `JWT ${token}`)
                 .end((error, res) => {
                 helpers_1.expect(res.status).to.equal(HTTPStatus.OK);
                 helpers_1.expect(res.body.payload.id).to.equal(userDefault.id);
@@ -75,6 +113,8 @@ describe('Testes de Integração', () => {
             };
             helpers_1.request(helpers_1.app)
                 .post('/api/users/create')
+                .set('Content-Type', 'application/json')
+                .set('Authorization', `JWT ${token}`)
                 .send(user)
                 .end((error, res) => {
                 console.log(res.body.payload);
@@ -95,6 +135,8 @@ describe('Testes de Integração', () => {
             helpers_1.request(helpers_1.app)
                 .put(`/api/users/${1}/update`)
                 .send(user)
+                .set('Content-Type', 'application/json')
+                .set('Authorization', `JWT ${token}`)
                 .end((error, res) => {
                 helpers_1.expect(res.status).to.equal(HTTPStatus.OK);
                 helpers_1.expect(res.body.payload[1][0].name).to.be.eql(user.name);
@@ -107,6 +149,8 @@ describe('Testes de Integração', () => {
         it('Deve deletar um usuário', done => {
             helpers_1.request(helpers_1.app)
                 .delete(`/api/users/${userTest.id}/destroy`)
+                .set('Content-Type', 'application/json')
+                .set('Authorization', `JWT ${token}`)
                 .end((error, res) => {
                 console.log(res.body.payload);
                 helpers_1.expect(res.status).to.equal(HTTPStatus.OK);
